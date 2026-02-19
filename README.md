@@ -27,49 +27,14 @@ cd bookmark-app
 npm install
 ```
 
-### 2. Set Up Supabase
 
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to SQL Editor and run this schema:
 
-```sql
--- Create bookmarks table
-create table bookmarks (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references auth.users not null,
-  url text not null,
-  title text not null,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
-
--- Enable Row Level Security
-alter table bookmarks enable row level security;
-
--- Policy: Users can only see their own bookmarks
-create policy "Users can view own bookmarks"
-  on bookmarks for select
-  using (auth.uid() = user_id);
-
--- Policy: Users can insert their own bookmarks
-create policy "Users can insert own bookmarks"
-  on bookmarks for insert
-  with check (auth.uid() = user_id);
-
--- Policy: Users can delete their own bookmarks
-create policy "Users can delete own bookmarks"
-  on bookmarks for delete
-  using (auth.uid() = user_id);
-
--- Enable Realtime
-alter publication supabase_realtime add table bookmarks;
-```
-
-3. Go to Authentication > Providers > Google
+2. Go to Authentication > Providers > Google
    - Enable Google provider
    - Add your Google OAuth credentials (Client ID and Secret)
    - Add authorized redirect URLs
 
-4. Copy your project URL and anon key from Settings > API
+. Copy your project URL and anon key from Settings > API
 
 ### 3. Configure Environment Variables
 
@@ -149,5 +114,5 @@ To test the app:
 2. Sign in with Google
 3. Add a bookmark in one tab
 4. Watch it appear instantly in the other tab (real-time sync)
-5. Delete a bookmark and see it disappear from both tabs
+5. Delete a bookmark
 6. Open in incognito mode with a different Google account to verify privacy (you won't see other users' bookmarks)
